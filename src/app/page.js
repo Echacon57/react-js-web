@@ -2,106 +2,187 @@
 
 import { useState } from "react";
 
-// Lista inicial de alumnos
+const CALIFICACION_MINIMA = 70;
+
 const alumnosIniciales = [
-  { nombre: "Carlos Hector", apellido: "Leal Delgado", carrera: "LCC" },
-  { nombre: "Alexis Felipe", apellido: "Elorza Obregon", carrera: "LCC" },
-  { nombre: "Axel Gabriel", apellido: "Gutierrez Ruano", carrera: "LCC" },
-  { nombre: "Eder Abraham", apellido: "Sampayo Gonzalez", carrera: "LCC" },
-  { nombre: "Edgar Aurelio", apellido: "Santiago Santiago", carrera: "LCC" },
-  { nombre: "Carlos Hector", apellido: "De Leon Saucedo", carrera: "LCC" },
-  { nombre: "Mayela Mayte", apellido: "Lopez Cerino", carrera: "LCC" },
-  { nombre: "Rodrigo", apellido: "Lopez Escobedo", carrera: "LMAD" },
-  { nombre: "Emiliano", apellido: "Chacon Alvarez", carrera: "LCC" },
+  { nombre: "Carlos Hector", apellido: "Leal Delgado", carrera: "LCC", tipo: "regular", calificacion: 85 },
+  { nombre: "Alexis Felipe", apellido: "Elorza Obregon", carrera: "LCC", tipo: "regular", calificacion: 92 },
+  { nombre: "Axel Gabriel", apellido: "Gutierrez Ruano", carrera: "LCC", tipo: "regular", calificacion: 68 },
+  { nombre: "Eder Abraham", apellido: "Sampayo Gonzalez", carrera: "LCC", tipo: "regular", calificacion: 75 },
+  { nombre: "Edgar Aurelio", apellido: "Santiago Santiago", carrera: "LCC", tipo: "regular", calificacion: 55 },
+  { nombre: "Carlos Hector", apellido: "De Leon Saucedo", carrera: "LCC", tipo: "regular", calificacion: 90 },
+  { nombre: "Mayela Mayte", apellido: "Lopez Cerino", carrera: "LCC", tipo: "regular", calificacion: 72 },
+  { nombre: "Rodrigo", apellido: "Lopez Escobedo", carrera: "LMAD", tipo: "regular", calificacion: 64 },
+  { nombre: "Emiliano", apellido: "Chacon Alvarez", carrera: "LCC", tipo: "regular", calificacion: 88 },
 ];
 
+function TablaAlumnos({ titulo, lista }) {
+  return (
+    <div className="lista">
+      <h2>{titulo}</h2>
+      <p className="contador">
+        {lista.length} {lista.length === 1 ? "alumno" : "alumnos"}
+      </p>
+
+      {lista.length > 0 ? (
+        <div className="tabla-wrap">
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Carrera</th>
+                <th>Calificación</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lista.map((alumno, index) => (
+                <tr
+                  key={index}
+                  className={
+                    alumno.calificacion < CALIFICACION_MINIMA ? "oculto" : ""
+                  }
+                >
+                  <td>
+                    <div className="flexbox flex-row">
+                      <img
+                        src="student.jpg"
+                        width="50"
+                        height="50"
+                        className="estudianteAvatar"
+                        alt=""
+                      />
+                      <span>{alumno.nombre}</span>
+                    </div>
+                  </td>
+                  <td>{alumno.apellido}</td>
+                  <td>{alumno.carrera}</td>
+                  <td>{alumno.calificacion}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="sin-resultados">No hay {titulo.toLowerCase()}.</p>
+      )}
+    </div>
+  );
+}
+
 export default function Home() {
-  // Estado: el arreglo de alumnos y los valores de los 3 campos de texto
   const [alumnos, setAlumnos] = useState(alumnosIniciales);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [carrera, setCarrera] = useState("");
+  const [tipo, setTipo] = useState("regular");
+  const [calificacion, setCalificacion] = useState("");
 
-  function agregarAlumno() {
-    // No agregar si falta algún dato
-    if (!nombre.trim() || !apellido.trim() || !carrera.trim()) return;
+  const regulares = alumnos.filter((a) => a.tipo === "regular");
+  const irregulares = alumnos.filter((a) => a.tipo === "irregular");
+
+  function agregarAlumno(e) {
+    e.preventDefault(); 
+
+    if (!nombre.trim() || !apellido.trim() || !carrera.trim() || calificacion === "") return;
 
     const nuevoAlumno = {
       nombre: nombre.trim(),
       apellido: apellido.trim(),
       carrera: carrera.trim(),
+      tipo: tipo,
+      calificacion: Number(calificacion),
     };
 
-    // Equivalente a push (agregar al final), pero sin modificar el arreglo original.
-    // React necesita un arreglo NUEVO para detectar el cambio y volver a renderizar.
     setAlumnos([...alumnos, nuevoAlumno]);
 
-    // Si quisieras agregar al INICIO (como unshift):
-    // setAlumnos([nuevoAlumno, ...alumnos]);
-
-    // Limpiar los campos
     setNombre("");
     setApellido("");
     setCarrera("");
+    setTipo("regular");
+    setCalificacion("");
   }
 
   return (
-    <div>
-      <h1>Alumnos</h1>
+    <>
+      <header className="site-header">
+        <div className="container header-inner">
+          <span className="logo">
+            Registro<span>Alumnos</span>
+          </span>
+        </div>
+      </header>
 
-      <section>
-        <h2>Agrega alumno:</h2>
-        <label htmlFor="nombre">Nombre de alumno:</label>
-        <input
-          id="nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-        <label htmlFor="apellido">Apellido de alumno:</label>
-        <input
-          id="apellido"
-          value={apellido}
-          onChange={(e) => setApellido(e.target.value)}
-        />
-        <label htmlFor="carrera">Carrera de alumno:</label>
-        <input
-          id="carrera"
-          value={carrera}
-          onChange={(e) => setCarrera(e.target.value)}
-        />
-        <button onClick={agregarAlumno}>Agregar</button>
-      </section>
+      <main>
+        <section className="hero">
+          <div className="container">
+            <h1>Alumnos</h1>
+            <p className="hero-subtitulo">
+              Agrega alumnos y clasifícalos como regulares o irregulares.
+              Los alumnos con calificación menor a {CALIFICACION_MINIMA} no se muestran.
+            </p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Carrera</th>
-          </tr>
-        </thead>
+            <form className="form-alumno" onSubmit={agregarAlumno}>
+              <div className="field">
+                <label htmlFor="nombre">Nombre de alumno</label>
+                <input
+                  id="nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="apellido">Apellido de alumno</label>
+                <input
+                  id="apellido"
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="carrera">Carrera de alumno</label>
+                <input
+                  id="carrera"
+                  value={carrera}
+                  onChange={(e) => setCarrera(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="tipo">Tipo de alumno</label>
+                <select
+                  id="tipo"
+                  value={tipo}
+                  onChange={(e) => setTipo(e.target.value)}
+                >
+                  <option value="regular">Regular</option>
+                  <option value="irregular">Irregular</option>
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="calificacion">Calificación</label>
+                <input
+                  id="calificacion"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={calificacion}
+                  onChange={(e) => setCalificacion(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="boton">
+                Agregar
+              </button>
+            </form>
+          </div>
+        </section>
 
-        <tbody>
-          {alumnos.map((alumno, index) => (
-            <tr key={index}>
-              <td>
-                <div className="flexbox flex-row">
-                  <img
-                    src="student.jpg"
-                    width="50"
-                    height="50"
-                    className="estudianteAvatar"
-                    alt=""
-                  />
-                  <span>{alumno.nombre}</span>
-                </div>
-              </td>
-              <td>{alumno.apellido}</td>
-              <td>{alumno.carrera}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        <section className="section">
+          <div className="container">
+            <TablaAlumnos titulo="Alumnos regulares" lista={regulares} />
+            <TablaAlumnos titulo="Alumnos irregulares" lista={irregulares} />
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
