@@ -216,8 +216,22 @@ p  { margin: 0 0 1em; }
   .form-alumno { grid-template-columns: repeat(2, 1fr); }
 }
 @media (min-width: 1024px) {
-  .form-alumno { grid-template-columns: repeat(5, 1fr) auto; }
+  .form-alumno { grid-template-columns: repeat(4, 1fr) auto; }
 }
 
 
 .oculto { display: none; }
+
+/* Menú de navegación */
+.site-header .header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav { display: flex; gap: 1.5rem; }
+.nav a {
+  color: var(--color-texto);
+  text-decoration: none;
+  font-weight: 600;
+}
+.nav a:hover { color: var(--color-primario); }
